@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-light">
+
+    <div class="container my-5">
+        <h1 class="text-center mb-4 text-primary fw-bold">📚 المكتبة الرقمية</h1>
+        
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for book in books %}
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0">
+                    {% if book.image %}
+                        <img src="{{ book.image.url }}" class="card-img-top" alt="{{ book.title }}" style="height: 250px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-secondary text-white text-center py-5" style="height: 250px;">لا توجد صورة</div>
+                    {% endif %}
+                    <div class="card-body">
+                        <span class="badge bg-info text-dark mb-2">{{ book.category }}</span>
+                        <h5 class="card-title fw-bold">{{ book.title }}</h5>
+                        <p class="card-text text-muted">الكاتب: {{ book.author }}</p>
+                    </div>
+                    <div class="card-footer bg-white border-0 text-center pb-3">
+                        <a href="{% url 'book_detail' book.pk %}" class="btn btn-primary w-100 fw-bold">عرض التفاصيل</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="alert alert-warning">لا توجد كتب مضافة حالياً.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %}

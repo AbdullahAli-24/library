@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-light">
+    <div class="container my-5">
+        <div class="card shadow border-0 overflow-hidden">
+            <div class="row g-0">
+                <div class="col-md-5 bg-dark text-center d-flex align-items-center justify-content-center">
+                    {% if book.image %}
+                        <img src="{{ book.image.url }}" class="img-fluid rounded-start w-100" style="max-height: 450px; object-fit: cover;" alt="{{ book.title }}">
+                    {% else %}
+                        <div class="text-white py-5">لا توجد صورة متوفرة</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-7">
+                    <div class="card-body p-4">
+                        <span class="badge bg-secondary mb-2">{{ book.category }}</span>
+                        <h2 class="card-title fw-bold mb-3">{{ book.title }}</h2>
+                        <h5 class="text-muted mb-4">✍️ الكاتب: {{ book.author }}</h5>
+
+                        <hr>
+
+                        <p class="card-text"><strong>📖 الوصف:</strong></p>
+                        <p class="text-secondary">{{ book.description|default:"لا يوجد وصف متاح لهذا الكتاب حالياً." }}</p>
+
+                        <div class="row my-4 bg-light p-3 rounded">
+                            <div class="col-6"><strong>📌 ISBN:</strong> {{ book.isbn }}</div>
+                            <div class="col-6"><strong>📚 إجمالي النسخ:</strong> {{ book.total_copies }}</div>
+                            <div class="col-12 mt-2"><strong>✅ النسخ المتاحة:</strong> <span class="badge bg-success">{{ book.available_copies }}</span></div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-success btn-lg flex-grow-1 fw-bold">احجز الكتاب الآن</button>
+                            <a href="{% url 'book_list' %}" class="btn btn-outline-secondary btn-lg">⬅️ العودة للقائمة</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %}
