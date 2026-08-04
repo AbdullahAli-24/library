@@ -1,0 +1,311 @@
+<!-- @format -->
+
+{% extends 'base.html' %} {% block styles %}
+<style>
+	body {
+		background: linear-gradient(135deg, #0d6efd, #6610f2);
+
+		min-height: 100vh;
+	}
+
+	.card {
+		border: none;
+
+		border-radius: 20px;
+
+		animation: fadeIn 0.7s;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+
+			transform: translateY(40px);
+		}
+
+		to {
+			opacity: 1;
+
+			transform: translateY(0);
+		}
+	}
+
+	.logo {
+		font-size: 60px;
+
+		color: #0d6efd;
+	}
+
+	.form-control {
+		border-radius: 12px;
+	}
+
+	.btn {
+		border-radius: 12px;
+	}
+</style>
+
+{% endblock styles %} {% block content %}
+
+<div class="container">
+	<div class="row justify-content-center align-items-center vh-100">
+		<div class="col-lg-5 col-md-7">
+			<div class="card shadow-lg">
+				<div class="card-body p-5">
+					<div class="text-center mb-4">
+						<i class="bi bi-person-plus-fill logo"></i>
+
+						<h2>Create Account</h2>
+
+						<p class="text-muted">Library Management System</p>
+					</div>
+
+					{% for message in messages %}
+
+					<div
+						class="alert alert-{{ message.tags }} alert-dismissible fade show">
+						{{ message }}
+
+						<button
+							type="button"
+							class="btn-close"
+							data-bs-dismiss="alert"></button>
+					</div>
+
+					{% endfor %}
+
+					<form method="POST">
+						{% csrf_token %} 
+                        {% if form.errors %}
+
+						<div class="alert alert-danger">
+							<h5>
+								<i class="bi bi-exclamation-triangle-fill"></i>
+
+								Please fix the following errors
+							</h5>
+
+							<hr />
+
+							<ul>
+								{% for field in form %}
+                                {% for error in field.errors %}
+
+								<li>
+									<strong>{{ field.label }}</strong>
+
+									: {{ error }}
+								</li>
+
+								{% endfor %}
+                                {% endfor %} 
+                                {% for error in form.non_field_errors %}
+								<li>{{ error }}</li>
+								{% endfor %}
+							</ul>
+						</div>
+
+						{% endif %}
+						<div class="mb-3">
+							<label class="form-label"> Username </label>
+
+							<div class="input-group">
+								<span class="input-group-text">
+									<i class="bi bi-person-fill"></i>
+								</span>
+
+								{{ form.username }}
+							</div>
+
+							<small id="username-msg"></small>
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label"> Email </label>
+
+							<div class="input-group">
+								<span class="input-group-text">
+									<i class="bi bi-envelope-fill"></i>
+								</span>
+
+								{{ form.email }}
+							</div>
+
+							<small id="email-msg"></small>
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label"> Password </label>
+
+							<div class="input-group">
+								<span class="input-group-text">
+									<i class="bi bi-lock-fill"></i>
+								</span>
+
+								{{ form.password1 }}
+
+								<button
+									class="btn btn-outline-secondary"
+									type="button"
+									onclick="togglePassword('id_password1', this)">
+									<i class="bi bi-eye-fill"></i>
+								</button>
+							</div>
+
+							<p id="strength" class="fw-bold mt-2"></p>
+
+							<small id="password-msg"></small>
+						</div>
+
+						<div class="mb-4">
+							<label class="form-label"> Confirm Password </label>
+
+							<div class="input-group">
+								<span class="input-group-text">
+									<i class="bi bi-lock-fill"></i>
+								</span>
+
+								{{ form.password2 }}
+
+								<button
+									class="btn btn-outline-secondary"
+									type="button"
+									onclick="togglePassword('id_password2', this)">
+									<i class="bi bi-eye-fill"></i>
+								</button>
+							</div>
+
+							<small id="confirm-msg"></small>
+						</div>
+
+						<button id="registerBtn" class="btn btn-primary w-100">
+							<i class="bi bi-person-check-fill"></i>
+
+							Register
+						</button>
+					</form>
+
+					<hr />
+
+					<p class="text-center">
+						Already have an account?
+
+						<a href="{% url 'login' %}"> Login </a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock content %}
+
+
+
+{% block scripts %}
+    <script>
+        
+            	
+			const username = document.getElementById("id_username");
+			const email = document.getElementById("id_email");
+			const password = document.getElementById("id_password1");
+			const confirm = document.getElementById("id_password2");
+
+			const usernameMsg = document.getElementById("username-msg");
+			const emailMsg = document.getElementById("email-msg");
+			const passwordMsg = document.getElementById("password-msg");
+			const confirmMsg = document.getElementById("confirm-msg");
+			const strength = document.getElementById("strength");
+
+			username.addEventListener("input", function () {
+				if (username.value.length >= 3) {
+					usernameMsg.innerHTML = "✅ Valid Username";
+					usernameMsg.className = "text-success";
+				} else {
+					usernameMsg.innerHTML = "❌ Username must be at least 3 characters";
+					usernameMsg.className = "text-danger";
+				}
+			});
+
+			email.addEventListener("input", function () {
+				let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+				if (pattern.test(email.value)) {
+					emailMsg.innerHTML = "✅ Valid Email";
+					emailMsg.className = "text-success";
+				} else {
+					emailMsg.innerHTML = "❌ Invalid Email";
+					emailMsg.className = "text-danger";
+				}
+			});
+
+			password.addEventListener("input", function () {
+				let value = password.value;
+
+				let strong = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+				if (value.length < 8) {
+					strength.innerHTML = "❌ Weak Password";
+					strength.className = "text-danger fw-bold";
+
+					passwordMsg.innerHTML = "Password must be at least 8 characters";
+					passwordMsg.className = "text-danger";
+				} else if (strong.test(value)) {
+					strength.innerHTML = "✅ Strong Password";
+					strength.className = "text-success fw-bold";
+
+					passwordMsg.innerHTML = "Excellent password";
+					passwordMsg.className = "text-success";
+				} else {
+					strength.innerHTML = "⚠ Medium Password";
+					strength.className = "text-warning fw-bold";
+
+					passwordMsg.innerHTML =
+						"Add uppercase, lowercase, number and special character";
+					passwordMsg.className = "text-warning";
+				}
+			});
+
+			confirm.addEventListener("input", function () {
+				if (confirm.value === password.value) {
+					confirmMsg.innerHTML = "✅ Passwords Match";
+					confirmMsg.className = "text-success";
+				} else {
+					confirmMsg.innerHTML = "❌ Passwords Do Not Match";
+					confirmMsg.className = "text-danger";
+				}
+			});
+
+			function togglePassword(id, button) {
+				let input = document.getElementById(id);
+
+				let icon = button.querySelector("i");
+
+				if (input.type === "password") {
+					input.type = "text";
+
+					icon.className = "bi bi-eye-slash-fill";
+				} else {
+					input.type = "password";
+
+					icon.className = "bi bi-eye-fill";
+				}
+			}
+
+			document.querySelector("form").addEventListener("submit", function () {
+				let btn = document.getElementById("registerBtn");
+
+				btn.innerHTML = `
+    <span class="spinner-border spinner-border-sm"></span>
+    Creating Account...
+    `;
+
+				btn.disabled = true;
+			});
+	
+
+	
+    </script>
+
+
+{% endblock scripts %}

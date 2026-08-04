@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ book.title }}
+{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="row g-0">
+            <div class="col-md-4 text-center p-4 bg-light">
+                {% if book.cover %}
+                <img src="{{ book.cover.url }}"
+                     class="img-fluid rounded shadow-lg"
+                     style="max-height:500px;">
+                {% else %}
+                <img src="https://via.placeholder.com/300x450?text=No+Image"
+                     class="img-fluid rounded shadow-lg">
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <div class="card-body p-5">
+                    <h1 class="fw-bold">
+                        {{ book.title }}
+                    </h1>
+                    <h5 class="text-secondary">
+                        By {{ book.author }}
+                    </h5>
+                    <div class="my-3">
+                        <h5>
+                            ⭐ {{ rating }}/5
+                            <small class="text-muted">
+                                ({{ ratings_count }} Reviews)
+                            </small>
+                        </h5>
+                    </div>
+                    <form method="POST"
+                          action="{% url 'rate_book' book.id %}"
+                          class="mb-3">
+                        {% csrf_token %}
+                        <div class="btn-group">
+                            <button name="stars" value="1" class="btn btn-outline-warning">1⭐</button>
+                            <button name="stars" value="2" class="btn btn-outline-warning">2⭐</button>
+                            <button name="stars" value="3" class="btn btn-outline-warning">3⭐</button>
+                            <button name="stars" value="4" class="btn btn-outline-warning">4⭐</button>
+                            <button name="stars" value="5" class="btn btn-warning">5⭐</button>
+                        </div>
+                    </form>
+                    <a href="{% url 'toggle_favorite' book.id %}"
+                       class="btn btn-outline-danger mb-4">
+                        {% if is_favorite %}
+                        ❤️ Remove Favorite
+                        {% else %}
+                        🤍 Add to Favorite
+                        {% endif %}
+                    </a>
+                    {% if book.available_quantity > 0 %}
+                    <span class="badge bg-success fs-6">
+                        Available
+                    </span>
+                    {% else %}
+                    <span class="badge bg-danger fs-6">
+                        Borrowed
+                    </span>
+                    {% endif %}
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Category</strong><br>{{ book.category }}</p>
+                            <p><strong>Publisher</strong><br>{{ book.publisher }}</p>
+                            <p><strong>Publish Date</strong><br>{{ book.publish_date }}</p>
+                            <p><strong>Language</strong><br>{{ book.language }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>ISBN</strong><br>{{ book.isbn }}</p>
+                            <p><strong>Pages</strong><br>{{ book.pages }}</p>
+                            <p><strong>Total Copies</strong><br>{{ book.quantity }}</p>
+                            <p><strong>Available Copies</strong><br>{{ book.available_quantity }}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <h4>Description</h4>
+                    <p class="text-muted">
+                        {{ book.description|default:"No description available." }}
+                    </p>
+                    <div class="mt-4">
+                        {% if book.available_quantity > 0 %}
+                        <a href="{% url 'borrow_book' book.id %}"
+                           class="btn btn-success btn-lg">
+                            Borrow Book
+                        </a>
+                        {% else %}
+                        <button class="btn btn-danger btn-lg" disabled>
+                            Borrowed
+                        </button>
+                        {% endif %}
+                        <a href="{% url 'books' %}"
+                           class="btn btn-outline-secondary btn-lg ms-2">
+                            Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if similar_books %}
+    <div class="mt-5">
+        <h3 class="mb-4">
+            📚 Similar Books
+        </h3>
+        <div class="row">
+            {% for b in similar_books %}
+            <div class="col-md-3">
+                <div class="card shadow-sm h-100">
+                    {% if b.cover %}
+                    <img src="{{ b.cover.url }}"
+                         class="card-img-top"
+                         style="height:260px;object-fit:cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h6>{{ b.title }}</h6>
+                        <small class="text-muted">
+                            {{ b.author }}
+                        </small>
+                        <br><br>
+                        <a href="{% url 'book_detail' b.id %}"
+                           class="btn btn-primary btn-sm w-100">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

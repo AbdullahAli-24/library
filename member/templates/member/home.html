@@ -1,0 +1,75 @@
+<!-- @format -->
+
+
+{% extends 'base.html' %}
+
+{% block styles %}
+
+    <style>
+			body {
+				background: #f5f7fa;
+			}
+			.navbar {
+				box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+			}
+			.card {
+				border: none;
+				border-radius: 18px;
+				transition: 0.3s;
+			}
+			.card:hover {
+				transform: translateY(-10px);
+				box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+			}
+			.icon {
+				font-size: 55px;
+			}
+		</style>
+{% endblock styles %}
+{% block content %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+	<div class="container">
+		<a class="navbar-brand fw-bold" href="#"> 📚 Library Management System </a>
+		<div class="ms-auto">
+			<span class="text-white me-3">
+				Welcome,<strong>{{request.user.username}}</strong>
+			</span>
+			<a href="{% url 'logout' %}" class="btn btn-light"> Logout </a>
+		</div>
+	</div>
+</nav>
+<div class="container mt-5">
+	<div class="text-center mb-5">
+		<h2>Dashboard</h2>
+		<p class="text-muted">Choose one section to continue</p>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<div class="card shadow p-4 text-center">
+				<div class="icon">📚</div>
+				<h3>Books</h3>
+				<p>Manage Books</p>
+				<a href="/books/" class="btn btn-primary"> Open </a>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="card shadow p-4 text-center">
+				<div class="icon">👤</div>
+				<h3>Members</h3>
+				<p>Manage Members</p>
+				<a href="/member/" class="btn btn-success"> Open </a>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="card shadow p-4 text-center">
+				<div class="icon">📖</div>
+				<h3>Loans</h3>
+				<p>Manage Loans</p>
+				<a href="/loan/" class="btn btn-warning"> Open </a>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock content %}
