@@ -13,7 +13,6 @@ class BookForm(forms.ModelForm):
             "author",
             "isbn",
             "category",
-            "publisher",
             "publish_date",
             "quantity",
             "available_quantity",
@@ -40,11 +39,6 @@ class BookForm(forms.ModelForm):
             "category": forms.Select(attrs={
                 "class": "form-select"
             }),
-
-            "publisher": forms.TextInput(attrs={
-                "class": "form-control"
-            }),
-
             "publish_date": forms.DateInput(attrs={
                 "class": "form-control",
                 "type": "date"
