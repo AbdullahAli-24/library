@@ -1,143 +1,70 @@
-<!-- @format -->
 
-{% extends 'base.html' %} 
+{% extends "base.html" %}
 
-{% block styles %}
-<style>
-	body {
-		background: linear-gradient(135deg, #0d6efd, #6610f2);
-		min-height: 100vh;
-	}
-	.card {
-		border: none;
-		border-radius: 20px;
-		animation: fadeIn 0.7s;
-	}
-	@keyframes fadeIn {
-		from {
-			opacity: 0;
-			transform: translateY(40px);
-		}to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-	.logo {
-		font-size: 60px;
-		color: #0d6efd;
-	}
-	.form-control {
-		border-radius: 12px;
-	}
-</style>
-{% endblock %}
+{% block title %} Login {% endblock %} 
 
 {% block content %}
 
-<div class="container">
-	<div class="row justify-content-center align-items-center vh-100">
-		<div class="col-lg-5 col-md-7">
-			<div class="card shadow-lg">
-				<div class="card-body p-5">
-					<div class="text-center mb-4">
-						<i class="bi bi-box-arrow-in-right logo"></i>
-						<h2>Welcome Back</h2>
-						<p class="text-muted">Login to your account</p>
-					</div>
-					{% for message in messages %}
-					<div
-						class="alert alert-{{ message.tags }} alert-dismissible fade show">
-						{{ message }}
-
-						<button
-							type="button"
-							class="btn-close"
-							data-bs-dismiss="alert"></button>
-					</div>
-					{% endfor %}
-					<form method="POST">
-						{% csrf_token %}
-						<div class="mb-3">
-							<label class="form-label"> Username </label>
-							<div class="input-group">
-								<span class="input-group-text">
-									<i class="bi bi-person-fill"></i>
-								</span>
-								<input
-									type="text"
-									name="username"
-									class="form-control"
-									placeholder="Enter Username"
-									required />
-							</div>
-						</div>
-						<div class="mb-4">
-							<label class="form-label"> Password </label>
-							<div class="input-group">
-								<span class="input-group-text">
-									<i class="bi bi-lock-fill"></i>
-								</span>
-								<input
-									type="password"
-									id="password"
-									name="password"
-									class="form-control"
-									placeholder="Enter Password"
-									required />
-
-								<button
-									class="btn btn-outline-secondary"
-									type="button"
-									onclick="togglePassword()">
-									<i id="eye" class="bi bi-eye-fill"></i>
-								</button>
-							</div>
-						</div>
-						<button id="loginBtn" class="btn btn-primary w-100">
-							<i class="bi bi-box-arrow-in-right"></i>Login
-						</button>
-					</form>
-					<hr />
-					<p class="text-center">
-						Don't have an account?<a href="{% url 'signup' %}">
-							Create Account
-						</a>
-					</p>
+<div class="row justify-content-center">
+	<div class="col-lg-5 col-md-7">
+		<div class="login-card">
+			<div class="text-center mb-4">
+				<div class="login-icon">
+					<i class="bi bi-person-circle"></i>
 				</div>
+
+				<h2 class="fw-bold mt-3">Welcome Back</h2>
+
+				<p class="text-muted">Sign in to continue to the Library System</p>
+			</div>
+
+			<form method="POST">
+				{% csrf_token %} 
+				{% if form.errors %}
+				<div class="alert alert-danger">Please correct the errors below.</div>
+
+				{% endif %}
+				<div class="mb-3">
+					<label class="form-label"> Username </label>
+
+					<input
+						type="text"
+						name="username"
+						class="form-control"
+						placeholder="Enter your username"
+						autocomplete="username"
+						required />
+				</div>
+
+				<div class="mb-4">
+					<label class="form-label"> Password </label>
+
+					<input
+						type="password"
+						name="password"
+						class="form-control"
+						placeholder="Enter your password"
+						autocomplete="current-password"
+						required />
+				</div>
+
+				<button type="submit" class="btn btn-login w-100">
+					<i class="bi bi-box-arrow-in-right"></i>
+					Login
+				</button>
+			</form>
+
+			<hr />
+
+			<div class="text-center">
+				<small>
+					Don't have an account?
+
+					<a href="{% url 'signup' %}"> Create one </a>
+				</small>
 			</div>
 		</div>
 	</div>
 </div>
+
 {% endblock %}
-
-{% block scripts %}
-<script>
-			function togglePassword() {
-				let password = document.getElementById("password");
-
-				let eye = document.getElementById("eye");
-
-				if (password.type === "password") {
-					password.type = "text";
-
-					eye.className = "bi bi-eye-slash-fill";
-				} else {
-					password.type = "password";
-
-					eye.className = "bi bi-eye-fill";
-				}
-			}
-
-			document.querySelector("form").addEventListener("submit", function () {
-				let btn = document.getElementById("loginBtn");
-
-				btn.innerHTML = `<span class="spinner-border spinner-border-sm"> </span> Logging In... `;
-
-				btn.disabled = true;
-			});
-
-
-
-		</script>
-
-{% endblock scripts %}
