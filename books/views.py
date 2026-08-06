@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-
+from django.core.paginator import Paginator
 from .models import Book, Rating, Favorite
 from .forms import BookForm
 
@@ -9,11 +9,14 @@ from .forms import BookForm
 @login_required
 def books(request):
     books = Book.objects.all()
+    paginator = Paginator(books, 4) 
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)  
     search = request.GET.get("search")
     if search:
         books = books.filter(title__icontains=search)
     favorites = Favorite.objects.filter( user=request.user).values_list( "book_id", flat=True )
-    return render( request, "books/books.html", { "books": books, "favorites": favorites,})
+    return render( request, "books/books.html", { "books": page_obj, "favorites": favorites,})
 
 
 @login_required
@@ -75,7 +78,7 @@ def add_book(request):
             return redirect("books")
     else:
         form = BookForm()
-    return render( request,"books/book_form.html", {"form": form,"title": "Add Book"})
+    return render( request,"books/add_book.html", {"form": form,"title": "Add Book"})
 
 
 
