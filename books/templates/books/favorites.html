@@ -1,126 +1,84 @@
-{% extends "member/base.html" %}
+<!-- @format -->
 
-{% block title %}
-Favorite Books
-{% endblock %}
+{% extends "base.html" %} 
+
+{% block title %} Favorite Books {% endblock %} 
 
 {% block content %}
 
 <div class="container py-4">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h2>❤️ My Favorite Books</h2>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+		<a href="{% url 'books' %}" class="btn btn-primary">
+			<i class="bi bi-arrow-left"></i>
 
-        <h2>
-            ❤️ My Favorite Books
-        </h2>
+			Back to Library
+		</a>
+	</div>
 
-        <a href="{% url 'books' %}" class="btn btn-primary">
+	<div class="row">
+		{% for favorite in favorites %}
 
-            <i class="bi bi-arrow-left"></i>
+		<div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+			<div class="card shadow h-100">
+				{% if favorite.book.cover %}
 
-            Back to Library
+				<img
+					src="{{ favorite.book.cover.url }}"
+					class="card-img-top"
+					style="height: 320px; object-fit: cover" />
 
-        </a>
+				{% else %}
 
-    </div>
+				<img
+					src="https://via.placeholder.com/250x320?text=No+Image"
+					class="card-img-top" />
 
-    <div class="row">
+				{% endif %}
 
-        {% for favorite in favorites %}
+				<div class="card-body">
+					<h5 class="card-title">{{ favorite.book.title }}</h5>
 
-        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+					<p class="text-muted">{{ favorite.book.author }}</p>
 
-            <div class="card shadow h-100">
+					<span class="badge bg-primary"> {{ favorite.book.category }} </span>
 
-                {% if favorite.book.cover %}
+					<hr />
 
-                <img src="{{ favorite.book.cover.url }}"
-                     class="card-img-top"
-                     style="height:320px;object-fit:cover;">
+					<div class="d-grid gap-2">
+						<a
+							href="{% url 'book_detail' favorite.book.id %}"
+							class="btn btn-info">
+							<i class="bi bi-eye-fill"></i>
 
-                {% else %}
+							Details
+						</a>
 
-                <img src="https://via.placeholder.com/250x320?text=No+Image"
-                     class="card-img-top">
+						<a
+							href="{% url 'toggle_favorite' favorite.book.id %}"
+							class="btn btn-danger">
+							❤️ Remove
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
 
-                {% endif %}
+		{% empty %}
 
-                <div class="card-body">
+		<div class="col-12">
+			<div class="alert alert-warning text-center">
+				<h4>💔 No favorite books yet.</h4>
 
-                    <h5 class="card-title">
+				<p>Browse the library and add books to your favorites.</p>
 
-                        {{ favorite.book.title }}
+				<a href="{% url 'books' %}" class="btn btn-primary"> Browse Books </a>
+			</div>
+		</div>
 
-                    </h5>
-
-                    <p class="text-muted">
-
-                        {{ favorite.book.author }}
-
-                    </p>
-
-                    <span class="badge bg-primary">
-
-                        {{ favorite.book.category }}
-
-                    </span>
-
-                    <hr>
-
-                    <div class="d-grid gap-2">
-
-                        <a href="{% url 'book_detail' favorite.book.id %}"
-                           class="btn btn-info">
-
-                            <i class="bi bi-eye-fill"></i>
-
-                            Details
-
-                        </a>
-
-                        <a href="{% url 'toggle_favorite' favorite.book.id %}"
-                           class="btn btn-danger">
-
-                            ❤️ Remove
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        {% empty %}
-
-        <div class="col-12">
-
-            <div class="alert alert-warning text-center">
-
-                <h4>💔 No favorite books yet.</h4>
-
-                <p>
-
-                    Browse the library and add books to your favorites.
-
-                </p>
-
-                <a href="{% url 'books' %}" class="btn btn-primary">
-
-                    Browse Books
-
-                </a>
-
-            </div>
-
-        </div>
-
-        {% endfor %}
-
-    </div>
-
+		{% endfor %}
+	</div>
 </div>
 
 {% endblock %}

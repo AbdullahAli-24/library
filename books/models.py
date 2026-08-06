@@ -13,7 +13,6 @@ class Book(models.Model):
     author = models.CharField(max_length=150)
     isbn = models.CharField( max_length=20,unique=True, null=True,blank=True)
     category = models.ForeignKey( Category, on_delete=models.CASCADE )
-    publisher = models.CharField( max_length=150,blank=True)
     publish_date = models.DateField(null=True, blank=True)
     quantity = models.PositiveIntegerField(default=1)
     available_quantity = models.PositiveIntegerField(default=1 )
